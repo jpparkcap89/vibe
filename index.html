@@ -414,6 +414,8 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 <main id="root"><div class="loading">실습 자료를 불러오는 중…</div></main>
 <footer class="foot" id="footer">AI와 함께 만드는 나만의 앱</footer>
 </div><div id="layer" class="hidden"></div><div id="toast" class="toast hidden" role="status"></div>
+<script src="config.js"></script>
+<script src="bridge.js"></script>
 <script>
 const $ = s => document.querySelector(s);
 const esc = v => String(v ?? '').replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('\"', '&quot;').replaceAll(String.fromCharCode(39), '&#39;');
@@ -424,7 +426,7 @@ let PUB = null, ADM = null, token = '', selected = '', tab = 'guides', filter = 
 const schema = { Categories: ['categoryId', 'name', 'description', 'icon', 'color', 'sortOrder', 'isActive'], Examples: ['exampleId', 'categoryId', 'title', 'subtitle', 'description', 'difficulty', 'estimatedMinutes', 'technology', 'icon', 'thumbnailUrl', 'sortOrder', 'isPublished', 'createdAt', 'updatedAt'], Prompts: ['promptId', 'exampleId', 'title', 'promptType', 'content', 'sortOrder', 'isActive'], SourceCodes: ['codeId', 'exampleId', 'fileName', 'language', 'content', 'description', 'sortOrder', 'isActive'], Missions: ['missionId', 'exampleId', 'title', 'description', 'difficulty', 'prompt', 'hint', 'sortOrder', 'isActive'], Guides: ['guideId', 'exampleId', 'stepNumber', 'title', 'content', 'isActive'], Resources: ['resourceId', 'exampleId', 'title', 'resourceType', 'url', 'description', 'sortOrder', 'isActive'] };
 const labels = { Categories: '카테고리', Examples: '실습 예제', Prompts: '프롬프트', SourceCodes: '소스코드', Missions: '개선 미션', Guides: '실습 안내', Resources: '참고 자료' };
 const fieldLabels = { categoryId: '카테고리', exampleId: '연결 예제', title: '제목', name: '이름', subtitle: '부제목', description: '설명', difficulty: '난이도', estimatedMinutes: '예상 시간(분)', technology: '사용 기술', icon: '이모지', thumbnailUrl: '썸네일 URL', sortOrder: '정렬 순서', isActive: '공개 여부', isPublished: '공개 여부', promptType: '프롬프트 유형', content: '내용 / 코드', fileName: '파일명', language: '언어', stepNumber: '단계 순서', prompt: '미션 프롬프트', hint: '힌트', resourceType: '자료 유형', url: '링크 주소', color: '표시 색상', createdAt: '생성일', updatedAt: '수정일' };
-function call(fn, ...args) { return new Promise((resolve, reject) => google.script.run.withSuccessHandler(resolve).withFailureHandler(e => reject(new Error(e.message || String(e))))[fn](...args)); }
+function call(fn, ...args) { return window.VibeBridge.call(fn, args); }
 function flash(s) { const el = $('#toast'); el.textContent = s; el.classList.remove('hidden'); clearTimeout(flash.timer); flash.timer = setTimeout(() => el.classList.add('hidden'), 3000); }
 function fail(e) { flash('⚠ ' + e.message); console.error(e); }
 function setBusy(v) { busy = v; document.querySelectorAll('button[data-submit]').forEach(b => b.disabled = v); }
